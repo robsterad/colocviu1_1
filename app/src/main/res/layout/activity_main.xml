@@ -65,11 +65,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="364dp"
+                android:id="@+id/showText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text=""
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/navigateButton"
