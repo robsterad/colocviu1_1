@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -36,6 +38,11 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
         }
     }
     private var serviceStarted = false
+    private val intentFilter = IntentFilter().apply {
+        addAction("ro.pub.cs.systems.eim.action1")
+        addAction("ro.pub.cs.systems.eim.action2")
+        addAction("ro.pub.cs.systems.eim.action3")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +123,7 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
 
     }
     private fun checkAndStartService() {
-        if (timesClicked == 4) {
+        if (timesClicked == 4 && !serviceStarted) {
             val intent = Intent(this, Colocviu1_1Service::class.java)
             intent.putExtra("message", showText.text.toString())
             startService(intent)
@@ -127,5 +134,17 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
         val intent = Intent(this, Colocviu1_1Service::class.java)
         stopService(intent)
         super.onDestroy()
+    }
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(messageBroadcastReceiver, intentFilter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(messageBroadcastReceiver, intentFilter)
+        }
+    }
+    override fun onPause() {
+        unregisterReceiver(messageBroadcastReceiver)
+        super.onPause()
     }
 }
