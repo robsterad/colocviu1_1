@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
-class PracticalTest01PrepSecondaryActivity: AppCompatActivity() {
+class Colocviu1_1SecondaryActivity: AppCompatActivity() {
     private lateinit var registerButton : Button
     private lateinit var cancelButton : Button
     private lateinit var show : TextView
