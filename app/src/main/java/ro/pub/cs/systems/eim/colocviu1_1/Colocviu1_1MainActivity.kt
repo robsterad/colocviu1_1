@@ -1,8 +1,11 @@
 package ro.pub.cs.systems.eim.colocviu1_1
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -27,6 +30,13 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
     private var timesClicked : Int = 0
     private lateinit var startForResult: ActivityResultLauncher<Intent>
 
+    private val messageBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("Colocviu1_1Broadcast", intent?.getStringExtra("message") ?: "Empty")
+        }
+    }
+    private var serviceStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,21 +59,25 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
             showText.setText(showText.text.toString() + " " + "NORTH")
             timesClicked++
             timesClickedText.setText(timesClicked.toString())
+            checkAndStartService()
         }
         southButton.setOnClickListener {
             showText.setText(showText.text.toString() + " " + "SOUTH")
             timesClicked++
             timesClickedText.setText(timesClicked.toString())
+            checkAndStartService()
         }
         eastButton.setOnClickListener {
             showText.setText(showText.text.toString() + " " + "EAST")
             timesClicked++
             timesClickedText.setText(timesClicked.toString())
+            checkAndStartService()
         }
         westButton.setOnClickListener {
             showText.setText(showText.text.toString() + " " + "WEST")
             timesClicked++
             timesClickedText.setText(timesClicked.toString())
+            checkAndStartService()
         }
 
         timesClickedText.setText(timesClicked.toString())
@@ -100,5 +114,18 @@ class Colocviu1_1MainActivity : AppCompatActivity() {
 
         timesClicked = savedInstanceState.getInt("timesClicked")
 
+    }
+    private fun checkAndStartService() {
+        if (timesClicked == 4) {
+            val intent = Intent(this, Colocviu1_1Service::class.java)
+            intent.putExtra("message", showText.text.toString())
+            startService(intent)
+            serviceStarted = true
+        }
+    }
+    override fun onDestroy() {
+        val intent = Intent(this, Colocviu1_1Service::class.java)
+        stopService(intent)
+        super.onDestroy()
     }
 }
